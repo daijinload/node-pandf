@@ -1,6 +1,6 @@
 
-// node node_modules/mocha/bin/mocha test/test.js
-// node node_modules/mocha/bin/mocha --watch test/test.js
+// node node_modules/mocha/bin/mocha test/pandf.js
+// node node_modules/mocha/bin/mocha --watch test/pandf.js
 
 var util = require('util');
 var assert = require('power-assert');
