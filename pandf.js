@@ -23,9 +23,9 @@ const TYPE_BATSU = exports.TYPE_BATSU= '×';
 
 
 /**
-　* 枠計算用クラス
+　* 列計算用クラス
  */
-function Value(waku, type, index) {
+function ColumnValue(waku, type, index) {
   this.waku = waku;
   this.type = type;
   this.initIndex = index;
@@ -34,13 +34,13 @@ function Value(waku, type, index) {
   this.isMaxChange = false;
   this.isMinChange = false;
 }
-exports.Value = Value;
+exports.ColumnValue = ColumnValue;
 
 
 /**
 　* 枠計算
  */
-Value.prototype.culc = function(index) {
+ColumnValue.prototype.culc = function(index) {
   if (this.maxIndex < index) {
     this.maxIndex = index;
   }
@@ -68,7 +68,7 @@ function PandF(opsions) {
   this.end = opsions.end;
   this.waku = opsions.waku;
   this.wakuList = [];
-  this.valueList = [];
+  this.rateList = [];
 
   this.outList = [];
 };
@@ -79,11 +79,11 @@ exports.PandF = PandF;
 　* ファイル読み込んだり、枠リスト作ったり
  */
 PandF.prototype.setup = function(callback) {
-  // あとで、入力のvalueListから、最大値と最小値を取ってきたほうがよいかと
+  // あとで、入力のrateListから、最大値と最小値を取ってきたほうがよいかと
   var self = this;
   self.wakuList = PandF.prototype._createWakuList(this.start, this.end, this.waku);
   PandF.prototype._readFile(this.fileName, function(err, list) {
-    self.valueList = list;
+    self.rateList = list;
     callback(err);
   });
 };
@@ -109,34 +109,34 @@ PandF.prototype.setup = function(callback) {
 /**
 　* 枠リストから、対応するレンジのindexを取得する。
  */
-PandF.prototype._culc = function(waku, wakuList, valueList) {
+PandF.prototype._culc = function(waku, wakuList, rateList) {
   var outList = [];
-  var value;
-  valueList.forEach(function(num) {
+  var columnValue;
+  rateList.forEach(function(num) {
     var index = PandF.prototype._getIndex(wakuList, num);
-    if (!value) {
-      value = new Value(waku, TYPE_NONE, index);
+    if (!columnValue) {
+      columnValue = new ColumnValue(waku, TYPE_NONE, index);
     }
 
-    value.culc(index);
+    columnValue.culc(index);
 
-    if (value.isMaxChange) {
+    if (columnValue.isMaxChange) {
 //      console.log(' isMaxChange before', value);
-      value.type = TYPE_MARU;
-      outList.push(value);
-      value = new Value(waku, TYPE_BATSU, index);
+      columnValue.type = TYPE_MARU;
+      outList.push(columnValue);
+      columnValue = new ColumnValue(waku, TYPE_BATSU, index);
 //      console.log(' isMaxChange after', value);
     }
-    if (value.isMinChange) {
+    if (columnValue.isMinChange) {
 //      console.log(' isMinChange before', value);
-      value.type = TYPE_BATSU;
-      outList.push(value);
-      value = new Value(waku, TYPE_MARU, index);
+      columnValue.type = TYPE_BATSU;
+      outList.push(columnValue);
+      columnValue = new ColumnValue(waku, TYPE_MARU, index);
 //      console.log(' isMinChange after', value);
     }
   });
 
-  outList.push(value);
+  outList.push(columnValue);
 
   return outList;
 }
