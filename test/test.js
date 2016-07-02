@@ -40,22 +40,21 @@ describe('（#^ω^）', function(){
     });
   });
 
-  describe('計算処理を実行した場合', function(){
-    var pandf;
-    before(function() {
-      var options = {
-        start: 10000,
-        end: 10200,
-        waku: 50,
-        fileName: 'chart_20160702134558.csv'
-      };
-      pandf = new PandF(options);
-    });
+  describe('枠計算処理を実行した場合', function(){
     it('対応する枠リストのindex値が返却されること', function(){
-      pandf.wakuList = [ 1000, 1050, 1100, 1150, 1200 ];
-      assert(pandf.culc(1000) === 0);
-      assert(pandf.culc(1050) === 1);
-      assert(pandf.culc(1199) === 3);
+      var pandf = new PandF({});
+      var wakuList = [ 1000, 1050, 1100, 1150, 1200 ];
+      assert(PandF.prototype._culc(wakuList, 1000) === 0);
+      assert(PandF.prototype._culc(wakuList, 1050) === 1);
+      assert(PandF.prototype._culc(wakuList, 1199) === 3);
+    });
+  });
+
+  describe('メインの計算処理を実行した場合', function(){
+    it('ああああこと', function(){
+      var pandf = new PandF({});
+      console.log(pandf.culc(1000));
+      assert(pandf.culc(1000));
     });
   });
 

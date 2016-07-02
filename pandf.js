@@ -8,6 +8,7 @@ const fs = require('fs');
 // this.reset = function() {
 // };
 
+const TYPE_NONE = '';
 const TYPE_MARU = '○';
 const TYPE_BATSU = '×';
 
@@ -40,9 +41,27 @@ PandF.prototype.setup = function(callback) {
   });
 };
 
+PandF.prototype.culc = function(list, num) {
+  if (this.outList.length === 0) {
+    this.outList.push(new V());
+  }
+  var value = this.outList[this.outList.length - 1];
+
+  if (value.type === TYPE_NONE) {
+
+  }
+  if (value.type === TYPE_MARU) {
+
+  }
+  if (value.type === TYPE_BATSU) {
+
+  }
+
+  return value;
+};
+
 // 実際の計算処理
-PandF.prototype.culc = function(num) {
-  var list = this.wakuList;
+PandF.prototype._culc = function(list, num) {
   for (var i = 0; i < list.length; i++) {
     if (list[i] <= num && num < list[i + 1]) {
       return i;
