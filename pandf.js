@@ -2,8 +2,41 @@
 const readline = require('readline');
 const fs = require('fs');
 
+// this.status = '';
+// this.cell = 0;
+// this.isChange = false;
+// this.reset = function() {
+// };
+
+
+function PandF(opsions) {
+  this.fileName = opsions.fileName;
+  this.start = opsions.start;
+  this.end = opsions.end;
+  this.waku = opsions.waku;
+  this.wakuList = [];
+  this.valueList = [];
+};
+module.exports = PandF;
+
+// ファイル読み込んだり、枠リスト作ったり
+PandF.prototype.setup = function(callback) {
+  // あとで、入力のvalueListから、最大値と最小値を取ってきたほうがよいかと
+  this.wakuList = PandF.prototype._createWakuList(this.start, this.end, this.waku);
+  PandF.prototype._readFile(this.fileName, function(err, list) {
+    this.valueList = list;
+    callback(err);
+  });
+};
+
+// 実際の計算処理
+PandF.prototype.culc = function(num) {
+  console.log(this);
+  return this;
+};
+
 // 枠配列作成
-exports.createWakuList = function(start, end, width) {
+PandF.prototype._createWakuList = function(start, end, width) {
   let arr = [];
   let num = start;
   while (num < end) {
@@ -14,7 +47,7 @@ exports.createWakuList = function(start, end, width) {
 };
 
 // ファイル読み込み＆加工（本当は１メソッド、１処理だぞ！！）
-exports.readFile = function(fileName, callback) {
+PandF.prototype._readFile = function(fileName, callback) {
   const rl = readline.createInterface({
     input: fs.createReadStream(fileName)
   });
@@ -27,21 +60,16 @@ exports.readFile = function(fileName, callback) {
   });
 };
 
-// こいつが本体さ
-exports.PandF = function PandF(options, callback) {
-  this.current = 0;
-  this.status = '';
-  this.cell = 0;
-  this.culc = function(num) {
-    console.log(num);
-  };
-};
 
-exports.culc = function(options, callback) {
-  exports.readFile(options.fileName, function(err, list) {
-    var pandf = new exports.PandF();
-    list.forEach(function(value) {
-      pandf.culc(value);
-    });
-  });
-};
+// PandF.prototype.isWakeChange = function(num) {
+//   return this.isChange;
+// };
+
+// exports.culc = function(options, callback) {
+//   exports.readFile(options.fileName, function(err, list) {
+//     var pandf = new exports.PandF();
+//     list.forEach(function(value) {
+//       pandf.culc(value);
+//     });
+//   });
+// };
