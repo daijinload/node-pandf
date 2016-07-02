@@ -1,0 +1,24 @@
+{
+  "name": "node-pandf",
+  "version": "1.0.0",
+  "description": "ポイント＆フィギュアの出力とかしちゃいます。",
+  "main": "pandf.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha ./test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daijinload/node-pandf.git"
+  },
+  "author": "daijinload@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/daijinload/node-pandf/issues"
+  },
+  "homepage": "https://github.com/daijinload/node-pandf#readme",
+  "devDependencies": {
+    "intelli-espower-loader": "^1.0.1",
+    "mocha": "^2.5.3",
+    "power-assert": "^1.4.1"
+  }
+}
