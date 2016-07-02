@@ -2,6 +2,7 @@
 // node node_modules/mocha/bin/mocha test/test.js
 // node node_modules/mocha/bin/mocha --watch test/test.js
 
+var util = require('util');
 var assert = require('power-assert');
 var PandF = require('../pandf');
 
@@ -39,21 +40,23 @@ describe('（#^ω^）', function(){
     });
   });
 
-  // describe('計算処理を実行した場合', function(){
-  //   var pandf;
-  //   before(function(done) {
-  //     var options = {
-  //       start: 10000,
-  //       end: 10200,
-  //       waku: 50,
-  //       fileName: 'chart_20160702134558.csv'
-  //     };
-  //     pandf = new PandF(options);
-  //     pandf.setup(done);
-  //   });
-  //   it('セットアップされること', function(){
-  //     pandf.culc();
-  //   });
-  // });
+  describe('計算処理を実行した場合', function(){
+    var pandf;
+    before(function() {
+      var options = {
+        start: 10000,
+        end: 10200,
+        waku: 50,
+        fileName: 'chart_20160702134558.csv'
+      };
+      pandf = new PandF(options);
+    });
+    it('対応する枠リストのindex値が返却されること', function(){
+      pandf.wakuList = [ 1000, 1050, 1100, 1150, 1200 ];
+      assert(pandf.culc(1000) === 0);
+      assert(pandf.culc(1050) === 1);
+      assert(pandf.culc(1199) === 3);
+    });
+  });
 
 });

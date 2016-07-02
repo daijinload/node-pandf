@@ -8,6 +8,14 @@ const fs = require('fs');
 // this.reset = function() {
 // };
 
+const TYPE_MARU = '○';
+const TYPE_BATSU = '×';
+
+function V() {
+  this.prev = 0;
+  this.isChange = false;
+  this.type = '';
+}
 
 function PandF(opsions) {
   this.fileName = opsions.fileName;
@@ -16,6 +24,8 @@ function PandF(opsions) {
   this.waku = opsions.waku;
   this.wakuList = [];
   this.valueList = [];
+
+  this.outList = [];
 };
 module.exports = PandF;
 
@@ -32,9 +42,26 @@ PandF.prototype.setup = function(callback) {
 
 // 実際の計算処理
 PandF.prototype.culc = function(num) {
-  console.log(this);
-  return this;
-};
+  var list = this.wakuList;
+  for (var i = 0; i < list.length; i++) {
+    if (list[i] <= num && num < list[i + 1]) {
+      return i;
+    }
+  }
+  // 枠リストは全数値チェックしてから作るので、基本ここにはこないはず。
+  // 数値がメモリに入らずに、事前計算出来ない場合、来るとかかなぁ。
+  throw new Error('枠リストの範囲外の数値が来ました。。。');
+}
+
+
+// PandF.prototype.culc = function(num) {
+//   }
+//   var value = this.outList[this.outList.length - 1];
+//
+//   console.log(this);
+//   return this;
+// };
+
 
 // 枠配列作成
 PandF.prototype._createWakuList = function(start, end, width) {
