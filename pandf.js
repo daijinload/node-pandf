@@ -135,6 +135,9 @@ PandF.prototype._culc = function(waku, wakuList, valueList) {
 //      console.log(' isMinChange after', value);
     }
   });
+
+  outList.push(value);
+
   return outList;
 }
 

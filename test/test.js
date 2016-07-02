@@ -80,7 +80,9 @@ describe('（#^ω^）', function(){
       // console.log(outList);
       assert(outList[0].isMinChange === true);
       assert(outList[1].isMaxChange === true);
-      assert(outList.length === 2);
+      assert(outList[2].isMinChange === false);
+      assert(outList[2].isMaxChange === false);
+      assert(outList.length === 3);
     });
   });
 });
