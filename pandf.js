@@ -1,4 +1,19 @@
 
+// https://www.rakuten-sec.co.jp/MarketSpeedFX/onLineHelp/info/sp_chart/pf.html
+// [1] ポイント・アンド・フィギュア（P&F）は、上昇を”×”、下落を”○”で表しています。
+// 初期設定の値幅は10ですので10pipsの値動きで×(○)が描画されます。
+// [2] 価格は終値を採用します。
+// [3] それぞれの列は、上昇か下降かの一方のみが表示され、×印と○印は同じ列には記入しません。
+// [4] 価格が方向転換(上昇→下降もしくは下降→上昇)した時は、右に一列移動して記入します。
+//     そのため×印と○印は一列おきに表示されます。
+// [5] ×印と○印は一列に必ず3つ以上記入します。つまり価格の方向転換には、価格水準に応じた
+//     3枠以上(初期設定では30pips)の価格変動が必要です。これを3枠転換
+//     （スリー・ポイント・リバーサル）と言います。なお上昇相場、下降相場とも列を変えて×
+//     印または○印を記入する時は、1枠あけてから書き込むため、結局は4枠以上(初期設定では40pips)
+//     の価格変動が列を変えるためには必要となります。ただし、同じ方向に動いている間は上昇、
+//     下降とも1枠(初期設定では10pips)でも記入します。
+// [6] 上昇時でも、下降時でも0.1pipに満たない端数は切り捨てます。
+
 const readline = require('readline');
 const fs = require('fs');
 
@@ -12,11 +27,34 @@ const TYPE_NONE = '';
 const TYPE_MARU = '○';
 const TYPE_BATSU = '×';
 
-function V() {
-  this.prev = 0;
-  this.isChange = false;
-  this.type = '';
+function Value(waku, type, index) {
+  this.waku = waku;
+  this.type = type;
+  this.initIndex = index;
+  this.maxIndex = index;
+  this.minIndex = index;
+  this.isMaxChange = false;
+  this.isMinChange = false;
 }
+exports.Value = Value;
+
+Value.prototype.culc = function(index) {
+  if (this.maxIndex < index) {
+    this.maxIndex = index;
+  }
+  if (index < this.minIndex) {
+    this.minIndex = index;
+  }
+
+  var isChange = false;
+  if (this.initIndex + this.waku + 1 <= this.maxIndex) {
+    this.isMaxChange = true;
+  }
+  if (this.minIndex <= this.initIndex - this.waku - 1) {
+    this.isMinChange = true;
+  }
+  return this;
+};
 
 function PandF(opsions) {
   this.fileName = opsions.fileName;
@@ -28,7 +66,7 @@ function PandF(opsions) {
 
   this.outList = [];
 };
-module.exports = PandF;
+exports.PandF = PandF;
 
 // ファイル読み込んだり、枠リスト作ったり
 PandF.prototype.setup = function(callback) {
@@ -41,11 +79,22 @@ PandF.prototype.setup = function(callback) {
   });
 };
 
-PandF.prototype.culc = function(list, num) {
+// if (this.outList.length === 0) {
+//   this.outList.push(new V());
+// }
+// var value = this.outList[this.outList.length - 1];
+
+// 現時点でのアレを返す
+PandF.prototype.getValue = function() {
   if (this.outList.length === 0) {
-    this.outList.push(new V());
+    this.outList.push(new Value());
   }
-  var value = this.outList[this.outList.length - 1];
+  return this.outList[this.outList.length - 1];
+};
+
+PandF.prototype.culc = function() {
+
+  var value = this.getValue();
 
   if (value.type === TYPE_NONE) {
 

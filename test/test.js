@@ -4,7 +4,8 @@
 
 var util = require('util');
 var assert = require('power-assert');
-var PandF = require('../pandf');
+var PandF = require('../pandf').PandF;
+var Value = require('../pandf').Value;
 
 describe('（#^ω^）', function(){
   describe('枠リスト作成に必要な値を入れた場合', function(){
@@ -50,12 +51,25 @@ describe('（#^ω^）', function(){
     });
   });
 
-  describe('メインの計算処理を実行した場合', function(){
-    it('ああああこと', function(){
-      var pandf = new PandF({});
-      console.log(pandf.culc(1000));
-      assert(pandf.culc(1000));
+  describe('5が現在地で、下方向に列変更になる場合', function(){
+    it('3枠だと下方向に4動くと変更なので、5-4で、1の場合にtrueを返すこと', function() {
+      var value = new Value(3, '', 5);
+      assert(value.culc(4).isMinChange === false);
+      assert(value.culc(3).isMinChange === false);
+      assert(value.culc(2).isMinChange === false);
+      assert(value.culc(1).isMinChange === true);
     });
   });
+
+  describe('5が現在地で、上方向に列変更になる場合', function(){
+    it('3枠だと上方向に4動くと変更なので、5+4で、9の場合にtrueを返すこと', function() {
+      var value = new Value(3, '', 5);
+      assert(value.culc(6).isMaxChange === false);
+      assert(value.culc(7).isMaxChange === false);
+      assert(value.culc(8).isMaxChange === false);
+      assert(value.culc(9).isMaxChange === true);
+    });
+  });
+
 
 });
