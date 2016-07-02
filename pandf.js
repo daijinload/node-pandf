@@ -22,9 +22,10 @@ module.exports = PandF;
 // ファイル読み込んだり、枠リスト作ったり
 PandF.prototype.setup = function(callback) {
   // あとで、入力のvalueListから、最大値と最小値を取ってきたほうがよいかと
-  this.wakuList = PandF.prototype._createWakuList(this.start, this.end, this.waku);
+  var self = this;
+  self.wakuList = PandF.prototype._createWakuList(this.start, this.end, this.waku);
   PandF.prototype._readFile(this.fileName, function(err, list) {
-    this.valueList = list;
+    self.valueList = list;
     callback(err);
   });
 };

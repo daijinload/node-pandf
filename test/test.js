@@ -1,3 +1,7 @@
+
+// node node_modules/mocha/bin/mocha test/test.js
+// node node_modules/mocha/bin/mocha --watch test/test.js
+
 var assert = require('power-assert');
 var PandF = require('../pandf');
 
@@ -10,17 +14,16 @@ describe('（#^ω^）', function(){
     });
   });
   describe('指定形式のファイルを読み込ませた場合', function(){
-    it('加工も済んだ状態で、リストが返却されること', function(){
+    it('加工も済んだ状態で、リストが返却されること', function(done){
       PandF.prototype._readFile('chart_20160702134558.csv', function(err, list) {
         // console.log(list);
         assert.deepStrictEqual(list, [ 100000, 104000, 100000 ]);
+        done();
       });
     });
   });
   describe('セットアップを実行した場合', function(){
-    before(function() {
-    });
-    it('セットアップされること', function(){
+    it('セットアップされること', function(done){
       var options = {
         start: 10000,
         end: 10200,
@@ -31,21 +34,26 @@ describe('（#^ω^）', function(){
       pandf.setup(function() {
         assert.deepStrictEqual(pandf.wakuList, [ 10050, 10100, 10150, 10200 ]);
         assert.deepStrictEqual(pandf.valueList, [ 100000, 104000, 100000 ]);
-        console.log(pandf);
+        done();
       });
     });
   });
-});
 
-//   describe('枠が転換した場合', function(){
-//     it('転換したことを示す何かが帰ってくること', function(){
-//       var options = {
-//         waku: 50,
-//         fileName: 'chart_20160702134558.csv'
-//       };
-//       var _pandf = new PandF(options);
-//       _pandf.culc(100);
-//       _pandf.culc(250);
-//       _pandf.culc(100);
-// //      assert(!err);
-//     });
+  // describe('計算処理を実行した場合', function(){
+  //   var pandf;
+  //   before(function(done) {
+  //     var options = {
+  //       start: 10000,
+  //       end: 10200,
+  //       waku: 50,
+  //       fileName: 'chart_20160702134558.csv'
+  //     };
+  //     pandf = new PandF(options);
+  //     pandf.setup(done);
+  //   });
+  //   it('セットアップされること', function(){
+  //     pandf.culc();
+  //   });
+  // });
+
+});

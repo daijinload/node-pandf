@@ -4,7 +4,7 @@
   "description": "ポイント＆フィギュアの出力とかしちゃいます。",
   "main": "pandf.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha ./test/test.js"
+    "test": "node node_modules/mocha/bin/mocha test/test.js"
   },
   "repository": {
     "type": "git",
