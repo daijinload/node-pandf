@@ -76,7 +76,7 @@ describe('（#^ω^）', function(){
       var pandf = new PandF({});
       var wakuList = [ 1000, 1050, 1100, 1150, 1200, 1250 ];
       var valueList = [ 1200, 1000, 1200 ];
-      var outList = pandf._culc(3, 100, wakuList, valueList);
+      var outList = pandf._culc(3, wakuList, valueList);
       // console.log(outList);
       assert(outList[0].isMinChange === true);
       assert(outList[1].isMaxChange === true);

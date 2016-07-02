@@ -109,7 +109,7 @@ PandF.prototype.setup = function(callback) {
 /**
 　* 枠リストから、対応するレンジのindexを取得する。
  */
-PandF.prototype._culc = function(waku, num, wakuList, valueList) {
+PandF.prototype._culc = function(waku, wakuList, valueList) {
   var outList = [];
   var value;
   valueList.forEach(function(num) {
