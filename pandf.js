@@ -17,16 +17,14 @@
 const readline = require('readline');
 const fs = require('fs');
 
-// this.status = '';
-// this.cell = 0;
-// this.isChange = false;
-// this.reset = function() {
-// };
+const TYPE_NONE = exports.TYPE_NONE　= '';
+const TYPE_MARU = exports.TYPE_MARU= '○';
+const TYPE_BATSU = exports.TYPE_BATSU= '×';
 
-const TYPE_NONE = '';
-const TYPE_MARU = '○';
-const TYPE_BATSU = '×';
 
+/**
+　* 枠計算用クラス
+ */
 function Value(waku, type, index) {
   this.waku = waku;
   this.type = type;
@@ -38,6 +36,10 @@ function Value(waku, type, index) {
 }
 exports.Value = Value;
 
+
+/**
+　* 枠計算
+ */
 Value.prototype.culc = function(index) {
   if (this.maxIndex < index) {
     this.maxIndex = index;
@@ -56,6 +58,10 @@ Value.prototype.culc = function(index) {
   return this;
 };
 
+
+/**
+　* ポイントandフィギュアクラス
+ */
 function PandF(opsions) {
   this.fileName = opsions.fileName;
   this.start = opsions.start;
@@ -68,7 +74,10 @@ function PandF(opsions) {
 };
 exports.PandF = PandF;
 
-// ファイル読み込んだり、枠リスト作ったり
+
+/**
+　* ファイル読み込んだり、枠リスト作ったり
+ */
 PandF.prototype.setup = function(callback) {
   // あとで、入力のvalueListから、最大値と最小値を取ってきたほうがよいかと
   var self = this;
@@ -79,38 +88,61 @@ PandF.prototype.setup = function(callback) {
   });
 };
 
-// if (this.outList.length === 0) {
-//   this.outList.push(new V());
-// }
-// var value = this.outList[this.outList.length - 1];
 
 // 現時点でのアレを返す
-PandF.prototype.getValue = function() {
-  if (this.outList.length === 0) {
-    this.outList.push(new Value());
-  }
-  return this.outList[this.outList.length - 1];
-};
+// PandF.prototype.getValue = function() {
+//   if (this.outList.length === 0) {
+//     this.outList.push(new Value());
+//   }
+//   return this.outList[this.outList.length - 1];
+// };
+//
+// PandF.prototype.addValue = function(value) {
+//   this.outList.push(value);
+// };
 
-PandF.prototype.culc = function() {
+// PandF.prototype.culc = function() {
+//   return value;
+// };
 
-  var value = this.getValue();
 
-  if (value.type === TYPE_NONE) {
+/**
+　* 枠リストから、対応するレンジのindexを取得する。
+ */
+PandF.prototype._culc = function(waku, num, wakuList, valueList) {
+  var outList = [];
+  var value;
+  valueList.forEach(function(num) {
+    var index = PandF.prototype._getIndex(wakuList, num);
+    if (!value) {
+      value = new Value(waku, TYPE_NONE, index);
+    }
 
-  }
-  if (value.type === TYPE_MARU) {
+    value.culc(index);
 
-  }
-  if (value.type === TYPE_BATSU) {
+    if (value.isMaxChange) {
+//      console.log(' isMaxChange before', value);
+      value.type = TYPE_MARU;
+      outList.push(value);
+      value = new Value(waku, TYPE_BATSU, index);
+//      console.log(' isMaxChange after', value);
+    }
+    if (value.isMinChange) {
+//      console.log(' isMinChange before', value);
+      value.type = TYPE_BATSU;
+      outList.push(value);
+      value = new Value(waku, TYPE_MARU, index);
+//      console.log(' isMinChange after', value);
+    }
+  });
+  return outList;
+}
 
-  }
 
-  return value;
-};
-
-// 実際の計算処理
-PandF.prototype._culc = function(list, num) {
+/**
+　* 枠リストから、対応するレンジのindexを取得する。
+ */
+PandF.prototype._getIndex = function(list, num) {
   for (var i = 0; i < list.length; i++) {
     if (list[i] <= num && num < list[i + 1]) {
       return i;
@@ -122,16 +154,9 @@ PandF.prototype._culc = function(list, num) {
 }
 
 
-// PandF.prototype.culc = function(num) {
-//   }
-//   var value = this.outList[this.outList.length - 1];
-//
-//   console.log(this);
-//   return this;
-// };
-
-
-// 枠配列作成
+/**
+　* 枠配列作成
+ */
 PandF.prototype._createWakuList = function(start, end, width) {
   let arr = [];
   let num = start;
@@ -142,7 +167,10 @@ PandF.prototype._createWakuList = function(start, end, width) {
   return arr;
 };
 
-// ファイル読み込み＆加工（本当は１メソッド、１処理だぞ！！）
+
+/**
+　* ファイル読み込み＆加工（本当は１メソッド、１処理が良いのだが。。。）
+ */
 PandF.prototype._readFile = function(fileName, callback) {
   const rl = readline.createInterface({
     input: fs.createReadStream(fileName)
@@ -155,17 +183,3 @@ PandF.prototype._readFile = function(fileName, callback) {
     callback(null, list.reverse());
   });
 };
-
-
-// PandF.prototype.isWakeChange = function(num) {
-//   return this.isChange;
-// };
-
-// exports.culc = function(options, callback) {
-//   exports.readFile(options.fileName, function(err, list) {
-//     var pandf = new exports.PandF();
-//     list.forEach(function(value) {
-//       pandf.culc(value);
-//     });
-//   });
-// };

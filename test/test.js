@@ -20,12 +20,12 @@ describe('（#^ω^）', function(){
       PandF.prototype._readFile('chart_20160702134558.csv', function(err, list) {
         // console.log(list);
         assert.deepStrictEqual(list, [ 100000, 104000, 100000 ]);
-        done();
+        done(err);
       });
     });
   });
   describe('セットアップを実行した場合', function(){
-    it('セットアップされること', function(done){
+    it('wakuListとvalueListが、セットアップされること', function(done){
       var options = {
         start: 10000,
         end: 10200,
@@ -33,10 +33,10 @@ describe('（#^ω^）', function(){
         fileName: 'chart_20160702134558.csv'
       };
       var pandf = new PandF(options);
-      pandf.setup(function() {
+      pandf.setup(function(err) {
         assert.deepStrictEqual(pandf.wakuList, [ 10050, 10100, 10150, 10200 ]);
         assert.deepStrictEqual(pandf.valueList, [ 100000, 104000, 100000 ]);
-        done();
+        done(err);
       });
     });
   });
@@ -45,9 +45,9 @@ describe('（#^ω^）', function(){
     it('対応する枠リストのindex値が返却されること', function(){
       var pandf = new PandF({});
       var wakuList = [ 1000, 1050, 1100, 1150, 1200 ];
-      assert(PandF.prototype._culc(wakuList, 1000) === 0);
-      assert(PandF.prototype._culc(wakuList, 1050) === 1);
-      assert(PandF.prototype._culc(wakuList, 1199) === 3);
+      assert(PandF.prototype._getIndex(wakuList, 1000) === 0);
+      assert(PandF.prototype._getIndex(wakuList, 1050) === 1);
+      assert(PandF.prototype._getIndex(wakuList, 1199) === 3);
     });
   });
 
@@ -71,5 +71,16 @@ describe('（#^ω^）', function(){
     });
   });
 
-
+  describe('枠計算用処理に２回転換するデータを渡した場合', function(){
+    it('２回転換して結果を配列で返すこと', function() {
+      var pandf = new PandF({});
+      var wakuList = [ 1000, 1050, 1100, 1150, 1200, 1250 ];
+      var valueList = [ 1200, 1000, 1200 ];
+      var outList = pandf._culc(3, 100, wakuList, valueList);
+      // console.log(outList);
+      assert(outList[0].isMinChange === true);
+      assert(outList[1].isMaxChange === true);
+      assert(outList.length === 2);
+    });
+  });
 });
