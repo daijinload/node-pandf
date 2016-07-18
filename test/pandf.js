@@ -12,12 +12,12 @@ describe('（#^ω^）', function(){
     it('枠リストが出来ること', function(){
       var list = PandF.prototype._createWakuList(10000, 10200, 50);
       // console.log(list);
-      assert.deepStrictEqual(list, [ 10050, 10100, 10150, 10200 ]);
+      assert.deepStrictEqual(list, [ 10000, 10050, 10100, 10150, 10200 ]);
     });
   });
   describe('指定形式のファイルを読み込ませた場合', function(){
     it('加工も済んだ状態で、リストが返却されること', function(done){
-      PandF.prototype._readFile('chart_20160702134558.csv', function(err, list) {
+      PandF.prototype._readFile(__dirname + '/chart_test.csv', function(err, list) {
         // console.log(list);
         assert.deepStrictEqual(list, [ 100000, 104000, 100000 ]);
         done(err);
@@ -34,7 +34,7 @@ describe('（#^ω^）', function(){
       };
       var pandf = new PandF(options);
       pandf.setup(function(err) {
-        assert.deepStrictEqual(pandf.wakuList, [ 10050, 10100, 10150, 10200 ]);
+        assert.deepStrictEqual(pandf.wakuList, [ 10000, 10050, 10100, 10150, 10200 ]);
         assert.deepStrictEqual(pandf.rateList, [ 100000, 104000, 100000 ]);
         done(err);
       });

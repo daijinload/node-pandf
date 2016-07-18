@@ -20,7 +20,7 @@ const fs = require('fs');
 const TYPE_NONE = exports.TYPE_NONE　= '';
 const TYPE_MARU = exports.TYPE_MARU= '○';
 const TYPE_BATSU = exports.TYPE_BATSU= '×';
-
+const THREE_WAKU = 3;
 
 /**
 　* 列計算用クラス
@@ -41,6 +41,7 @@ exports.Column = Column;
 　* 枠計算
  */
 Column.prototype.culc = function(index) {
+  debugger;
   if (this.maxIndex < index) {
     this.maxIndex = index;
   }
@@ -48,11 +49,10 @@ Column.prototype.culc = function(index) {
     this.minIndex = index;
   }
 
-  var isChange = false;
-  if (this.initIndex + this.waku + 1 <= this.maxIndex) {
+  if (this.initIndex + THREE_WAKU + 1 <= this.maxIndex) {
     this.isMaxChange = true;
   }
-  if (this.minIndex <= this.initIndex - this.waku - 1) {
+  if (this.minIndex <= this.initIndex - THREE_WAKU - 1) {
     this.isMinChange = true;
   }
   return this;
@@ -99,9 +99,9 @@ PandF.prototype.setup = function(callback) {
 };
 
 // メインの計算処理
-PandF.prototype.culc = function(waku, wakuList, rateList) {
+PandF.prototype.culc = function() {
 
-  const outList = PandF.prototype._culc(waku, wakuList, rateList);
+  const outList = PandF.prototype._culc(this.waku, this.wakuList, this.rateList);
 
   let list = [];
   outList.forEach(function(column) {
@@ -130,6 +130,8 @@ PandF.prototype._culc = function(waku, wakuList, rateList) {
     }
 
     column.culc(index);
+    console.log('cccccccc', index);
+    console.log('cccccccc', column.isMaxChange, column.isMinChange);
 
     if (column.isMaxChange) {
 //      console.log(' isMaxChange before', value);
@@ -162,6 +164,7 @@ PandF.prototype._getIndex = function(list, num) {
       return i;
     }
   }
+  console.log(list, num);
   // 枠リストは全数値チェックしてから作るので、基本ここにはこないはず。
   // 数値がメモリに入らずに、事前計算出来ない場合、来るとかかなぁ。
   throw new Error('枠リストの範囲外の数値が来ました。。。');
@@ -174,9 +177,9 @@ PandF.prototype._getIndex = function(list, num) {
 PandF.prototype._createWakuList = function(start, end, width) {
   let arr = [];
   let num = start;
-  while (num < end) {
-    num += width;
+  while (num <= end) {
     arr.push(num);
+    num += width;
   }
   return arr;
 };
