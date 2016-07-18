@@ -25,7 +25,7 @@ const TYPE_BATSU = exports.TYPE_BATSU= '×';
 /**
 　* 列計算用クラス
  */
-function ColumnValue(waku, type, index) {
+function Column(waku, type, index) {
   this.waku = waku;
   this.type = type;
   this.initIndex = index;
@@ -34,13 +34,13 @@ function ColumnValue(waku, type, index) {
   this.isMaxChange = false;
   this.isMinChange = false;
 }
-exports.ColumnValue = ColumnValue;
+exports.Column = Column;
 
 
 /**
 　* 枠計算
  */
-ColumnValue.prototype.culc = function(index) {
+Column.prototype.culc = function(index) {
   if (this.maxIndex < index) {
     this.maxIndex = index;
   }
@@ -57,6 +57,16 @@ ColumnValue.prototype.culc = function(index) {
   }
   return this;
 };
+
+/**
+　* 列計算用クラス
+ */
+function ColumnValue(type, startIndex, endIndex) {
+  this.type = type;
+  this.startIndex = startIndex;
+  this.endIndex = endIndex;
+}
+exports.ColumnValue = ColumnValue;
 
 
 /**
@@ -88,55 +98,56 @@ PandF.prototype.setup = function(callback) {
   });
 };
 
+// メインの計算処理
+PandF.prototype.culc = function(waku, wakuList, rateList) {
 
-// 現時点でのアレを返す
-// PandF.prototype.getValue = function() {
-//   if (this.outList.length === 0) {
-//     this.outList.push(new Value());
-//   }
-//   return this.outList[this.outList.length - 1];
-// };
-//
-// PandF.prototype.addValue = function(value) {
-//   this.outList.push(value);
-// };
+  const outList = PandF.prototype._culc(waku, wakuList, rateList);
 
-// PandF.prototype.culc = function() {
-//   return value;
-// };
+  let list = [];
+  outList.forEach(function(column) {
+    if (column.isMaxChange) {
+      list.push(new ColumnValue(TYPE_MARU, column.initIndex, column.maxIndex));
+    }
+    if (column.isMinChange) {
+      list.push(new ColumnValue(TYPE_BATSU, column.initIndex, column.minIndex));
+    }
+  });
+
+  return list;
+};
 
 
 /**
-　* 枠リストから、対応するレンジのindexを取得する。
+　* 引数から、PandFの計算を行う。結果を配列で返す。
  */
 PandF.prototype._culc = function(waku, wakuList, rateList) {
   var outList = [];
-  var columnValue;
+  var column;
   rateList.forEach(function(num) {
     var index = PandF.prototype._getIndex(wakuList, num);
-    if (!columnValue) {
-      columnValue = new ColumnValue(waku, TYPE_NONE, index);
+    if (!column) {
+      column = new Column(waku, TYPE_NONE, index);
     }
 
-    columnValue.culc(index);
+    column.culc(index);
 
-    if (columnValue.isMaxChange) {
+    if (column.isMaxChange) {
 //      console.log(' isMaxChange before', value);
-      columnValue.type = TYPE_MARU;
-      outList.push(columnValue);
-      columnValue = new ColumnValue(waku, TYPE_BATSU, index);
+      column.type = TYPE_MARU;
+      outList.push(column);
+      column = new Column(waku, TYPE_BATSU, index);
 //      console.log(' isMaxChange after', value);
     }
-    if (columnValue.isMinChange) {
+    if (column.isMinChange) {
 //      console.log(' isMinChange before', value);
-      columnValue.type = TYPE_BATSU;
-      outList.push(columnValue);
-      columnValue = new ColumnValue(waku, TYPE_MARU, index);
+      column.type = TYPE_BATSU;
+      outList.push(column);
+      column = new Column(waku, TYPE_MARU, index);
 //      console.log(' isMinChange after', value);
     }
   });
 
-  outList.push(columnValue);
+  outList.push(column);
 
   return outList;
 }

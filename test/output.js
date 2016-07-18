@@ -10,14 +10,24 @@ var ColumnValue = require('../pandf').ColumnValue;
 describe('⊂二二二（ ＾ω＾）二⊃', function() {
   describe('とりあえず、セットした場合', function() {
     it('ああああ出来ること', function() {
-      var v = new ColumnValue();
+      var wakuList = [ 100, 105, 110, 115, 120, 125, 130, 135, 140 ];
+      var columnValueList = [
+        new ColumnValue('○', 4, 6),
+        new ColumnValue('×', 2, 5),
+        new ColumnValue('○', 3, 7)
+      ];
 
+      // wakulist, [ColumnValue, ColumnValue, ColumnValue]
+      var outList = [
+        [ 100, 105, 110, 115, 120, 125, 130, 135, 140 ],
+        [  '',  '',  '',  '', '○', '○', '○',  '',  '' ],
+        [  '',  '', '×', '×', '×', '×',  '',  '',  '' ],
+        [  '',  '',  '', '○', '○', '○', '○', '○',  '' ]
+      ];
 
-      var list = [v];
-      console.log(output.create(list));
-      //assert.deepStrictEqual(list, [ 10050, 10100, 10150, 10200 ]);
+      var list = output.create(wakuList, columnValueList);
 
-      console.log(output._createList(20));
+      assert.deepStrictEqual(list, outList);
     });
   });
 });

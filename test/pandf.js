@@ -5,7 +5,7 @@
 var util = require('util');
 var assert = require('power-assert');
 var PandF = require('../pandf').PandF;
-var ColumnValue = require('../pandf').ColumnValue;
+var Column = require('../pandf').Column;
 
 describe('（#^ω^）', function(){
   describe('枠リスト作成に必要な値を入れた場合', function(){
@@ -53,21 +53,21 @@ describe('（#^ω^）', function(){
 
   describe('5が現在地で、下方向に列変更になる場合', function(){
     it('3枠だと下方向に4動くと変更なので、5-4で、1の場合にtrueを返すこと', function() {
-      var columnValue = new ColumnValue(3, '', 5);
-      assert(columnValue.culc(4).isMinChange === false);
-      assert(columnValue.culc(3).isMinChange === false);
-      assert(columnValue.culc(2).isMinChange === false);
-      assert(columnValue.culc(1).isMinChange === true);
+      var column = new Column(3, '', 5);
+      assert(column.culc(4).isMinChange === false);
+      assert(column.culc(3).isMinChange === false);
+      assert(column.culc(2).isMinChange === false);
+      assert(column.culc(1).isMinChange === true);
     });
   });
 
   describe('5が現在地で、上方向に列変更になる場合', function(){
     it('3枠だと上方向に4動くと変更なので、5+4で、9の場合にtrueを返すこと', function() {
-      var columnValue = new ColumnValue(3, '', 5);
-      assert(columnValue.culc(6).isMaxChange === false);
-      assert(columnValue.culc(7).isMaxChange === false);
-      assert(columnValue.culc(8).isMaxChange === false);
-      assert(columnValue.culc(9).isMaxChange === true);
+      var column = new Column(3, '', 5);
+      assert(column.culc(6).isMaxChange === false);
+      assert(column.culc(7).isMaxChange === false);
+      assert(column.culc(8).isMaxChange === false);
+      assert(column.culc(9).isMaxChange === true);
     });
   });
 
